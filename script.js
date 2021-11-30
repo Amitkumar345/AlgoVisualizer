@@ -75,16 +75,11 @@ function showMakeNodeTitle(show){
     if(show) makeNodeTitle.classList.remove('d-none')
     else makeNodeTitle.classList.add('d-none')
 }
-function enableVisualizeBtn(enable){
-    if(enable)visualizeBtn.classList.remove('disabled')
-    else visualizeBtn.classList.add('disabled')
-}
 function show_PFA_Footer(show){
     if(show)pfaFooter.classList.remove('d-none')
     else pfaFooter.classList.add('d-none')
 }
 function getRowFromNodeId(id){
-    id = id.substring(4)
     var x = 2;
     if(id.charAt(1) == '-')x=1;
     return id.substring(0,x);
@@ -102,7 +97,7 @@ function createGrid(){
         for(var j=0;j<C;j++){
             var node = document.createElement('td')
             node.className = 'c_node unvisited'
-            node.id = 'node'+i+"-"+j
+            node.id = ''+i+"-"+j
             row.appendChild(node)
             if(isStartIndex(i,j)){
                 addStartNodeProperties(node)
@@ -121,7 +116,7 @@ function clearBoard(){
     for(var i=0;i<R;i++){
         for(var j=0;j<C;j++){
             if(isStartIndex(i,j) || isEndIndex(i,j))continue;
-            var id = 'node'+i+"-"+j
+            var id = ''+i+"-"+j
             var node = document.getElementById(id)
             node.className = 'c_node unvisited'
         }
@@ -132,8 +127,8 @@ function clearPath(){
     if(algoTypeTitle.textContent == 'Sorting')return;
     for(var i=0;i<R;i++){
         for(var j=0;j<C;j++){
-            if(isStartIndex(i,j) || isEndIndex(i,j) || isWallNode(node) || isWeightedNode(node))continue;
-            var id = 'node'+i+"-"+j
+            if(isStartIndex(i,j) || isEndIndex(i,j) || isWallIndex(i,j) || isWeightedIndex(i,j))continue;
+            var id = ''+i+"-"+j
             var node = document.getElementById(id)
             node.className = 'c_node unvisited'
         }
@@ -141,21 +136,24 @@ function clearPath(){
     setAsNothingClicked()
 }
 function makeIndexVisited(i,j){
-    var id = 'node'+i+"-"+j
+    if(isStartIndex(i,j) || isEndIndex(i,j))return;
+    var id = ''+i+"-"+j
     makeNodeVisited(document.getElementById(id))
 }
 function makeNodeVisited(el){
+    if(el === startNode || el === endNode)return;
+    if(isWallNode(el))return;
     el.className = 'c_node visited'
 }
 function makeIndexVisiting(i,j){
-    var id = 'node'+i+"-"+j
+    var id = ''+i+"-"+j
     makeNodeVisiting(document.getElementById(id))
 }
 function makeNodeVisiting(el){
     el.className = 'c_node visiting'
 }
 function makeIndexUnVisited(i,j){
-    var id = 'node'+i+"-"+j
+    var id = ''+i+"-"+j
     makeNodeUnVisited(document.getElementById(id))
 }
 function makeNodeUnVisited(el){
@@ -164,7 +162,7 @@ function makeNodeUnVisited(el){
     addUnvisitedNodeListener(el)
 }
 function makeIndexAsPathNode(i,j){
-    var id = 'node'+i+"-"+j
+    var id = ''+i+"-"+j
     makeNodeAsPathNode(document.getElementById(id))
 }
 function makeNodeAsPathNode(el){
@@ -185,12 +183,12 @@ function removeUnvisitedNodeListener(el){
 /////------ START and END NODE -----------/////
 function makeIndexAsStartNode(i,j){
     st_r =i;st_c=j;
-    var id = 'node'+i+"-"+j
+    var id = ''+i+"-"+j
     var node = document.getElementById(id)
     makeNodeAsStartNode(node)
 }
 function makeNodeAsStartNode(el){
-    if(startNode === el || endNode === el)return;
+    if(startNode == el || endNode == el)return;
     removeUnvisitedNodeListener(el)
     makeNodeUnVisited(startNode)
     st_r = getRowFromNodeId(el.id);
@@ -205,12 +203,12 @@ function addStartNodeProperties(el){
 }
 function makeIndexAsEndNode(i,j){
     en_r=i;en_c=j;
-    var id = 'node'+i+"-"+j
+    var id = ''+i+"-"+j
     var node = document.getElementById(id)
     makeNodeAsEndNode(node)
 }
 function makeNodeAsEndNode(el){
-    if(startNode === el || endNode === el)return;
+    if(startNode == el || endNode == el)return;
     removeUnvisitedNodeListener(el)
     makeNodeUnVisited(endNode)
     en_r = getRowFromNodeId(el.id);
@@ -285,15 +283,15 @@ function setMakeNodeTitle(opt){
              s = 'Make Node as';
             break;
     }
-    makeNodeTitle.textContent = s
+    makeNodeTitle.textContent = s;
 }
 function makeNode(el){
     if(el.classList.contains('startnode') 
         || el.classList.contains('endnode')) return;
     var s = makeNodeTitle.textContent
-    if(s === 'Weighted Node'){
+    if(s == 'Weighted Node'){
         makeNodeAsWeighted(el)
-    }else if(s === 'Wall Node'){
+    }else if(s == 'Wall Node'){
         makeNodeAsWall(el)
     }
 }
@@ -304,10 +302,13 @@ function makeNodeAsWall(el){
         el.className ='c_node wallnode'
 }
 function isWallNode(el){
-    return el.className.includes('wallnode')
+    if(!el){
+        console.log("isWall: ");return false;
+    }
+    return el.classList.contains('wallnode')
 }
-function isWallNode(i,j){
-    var id = 'node'+i+"-"+j
+function isWallIndex(i,j){
+    var id = ''+i+"-"+j
     var el = document.getElementById(id)
     return isWallNode(el)
 }
@@ -318,21 +319,133 @@ function makeNodeAsWeighted(el){
         el.className ='c_node weightednode'
 }
 function isWeightedNode(el){
-    return el.className.includes('weightednode')
+    return el.classList.contains('weightednode')
 }
-function isWeightedNode(i,j){
-    var id = 'node'+i+"-"+j
+function isWeightedIndex(i,j){
+    var id = ''+i+"-"+j
     var el = document.getElementById(id)
     return isWeightedNode(el)
 }
 ///
+/////--------- Visualize Button ----------------//////
+function enableVisualizeBtn(enable){
+    if(enable)visualizeBtn.classList.remove('disabled')
+    else visualizeBtn.classList.add('disabled')
+}
+function visualizeAlgo(){
+    var algo = selectedAlgo.textContent;
+    var s="sdf";
+    if(algo.includes('Selection Sort')){
+
+    }else if(algo.includes('Insertion Sort')){
+
+    }else if(algo.includes("Dijkstra's algo")){
+        
+    }else if(algo.includes("Breadth First Search")){
+        BFS();
+    }else if(algo.includes("Depth First Search")){
+        
+    }else{
+        
+    }
+}
+///
 /////--------- ALGORITHMS ----------------//////
 function selectAlgo(sect,num){
+    var s;
     if(sect == 1){
-
+        switch(num){
+            case 1:
+                s = 'Selection Sort';
+                break;
+            case 2:
+                s = 'Insertion Sort';
+                break;
+        }
     }else if(sect == 2){
-
+        switch(num){
+            case 1:
+                s = "Dijkstra's algo";
+                break;
+            case 2:
+                s = "Breadth First Search"
+                break;
+            case 3:
+                s="Depth First Search";
+                break;
+        }
     }
+    selectedAlgo.textContent = s;
+    enableVisualizeBtn(true);
 }
 ///--------- SORTING ALGORITHMS ----------/////
 ///--------- PATH FINDING ALGORITHMS ---------/////
+var visArr = new Array(3);
+const moveRow = [0,1,0,-1];
+const moveCol = [1,0,-1,0];
+for(var i=0;i<R;i++){
+    visArr[i] = new Array(C);
+}
+function resetVisArr(){
+    for(var i=0;i<R;i++){
+        for(var j=0;j<C;j++){
+            visArr[i][j] = false;
+        }
+    }
+}
+function isValidIndex(i,j){
+    if(i<0 || j<0 || i>=R || j>=C)return false;
+    if(visArr[i][j] == true){
+        return false;
+    }
+    if(isWallIndex(i,j)){
+        console.log("isWallIndex: "+i+'-'+j);
+        return false;
+    }
+    return true;
+}
+const parent = new Map();
+function BFS(){
+    resetVisArr();
+    var q = [];
+    q.push([st_r,st_c]);
+    visArr[st_r][st_c] = true;
+
+    while(q.length != 0){
+        var i = parseInt(q[0][0]),j = parseInt(q[0][1]);
+        q.shift();
+        if(isEndIndex(i,j)){
+            // alert("found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+            console.log("found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+            var id = i+'-'+j;
+            showPath(id);
+            return;
+        }
+        for(var k=0;k<4;k++){
+            var adjR = parseInt(i) + moveRow[k];
+            var adjC = parseInt(j) + moveCol[k];
+            if(!isValidIndex(adjR,adjC))continue;
+            var childId = adjR+'-'+adjC;
+            var parentId = i+'-'+j;
+            parent.set(childId,parentId);
+            q.push([adjR,adjC]);
+            makeIndexVisited(adjR,adjC);
+            visArr[adjR][adjC]= true;
+        }
+    }
+    alert("not found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+    console.log("not found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+}
+function showPath(cId){
+    var ar = [];
+    var pId = parent.get(cId);
+    while(pId){
+        ar.push(pId);
+        pId = parent.get(pId);
+    }
+    ar.reverse();
+    for(var i=1;i<ar.length;i++){
+        var el = document.getElementById(ar[i]);
+        makeNodeAsPathNode(el);
+    }
+}
