@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <meta name="viewport" content="width=1000; user-scalable=0;" /> -->
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script> 
+    <title>Algo Visualizer</title>
+  </head>
+  <body onload="setUp()">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Algo Visualizer</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Tutorial</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a id="algo_type_title" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Algorithm Type</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <li><a onclick="setTypeAsSA()" class="dropdown-item" >Sorting</a></li>
+                  <li><a onclick="setTypeAsPFA()" class="dropdown-item" >Path Finding</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle disabled" id="selected_algo" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Algorithms
+                </a>
+                <ul id="algo_menu" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li id="selection_sort" onclick="selectAlgo(1,1)"><a class="dropdown-item">Selection Sort</a></li>
+                  <li id="insertion_sort" onclick="selectAlgo(1,2)"><a class="dropdown-item">Insertion Sort</a></li>
+                  <li id="dijkstra_algo" onclick="selectAlgo(2,1)"><a class="dropdown-item">Dijkstra's algo</a></li>
+                  <li id="bfs_algo" onclick="selectAlgo(2,2)"><a class="dropdown-item">Breadth First Search</a></li>
+                  <li id="dfs_algo" onclick="selectAlgo(2,3)"><a class="dropdown-item">Depth First Search</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a id='clr_board' onclick="clearBoard()" role="button" class="nav-link disabled">Clear Board</a>
+              </li>
+              <li class="nav-item">
+                <a id='clr_path' onclick="clearPath()" role="button" class="nav-link d-none" >Clear Path</a>
+              </li>
+              <!-- <li class="nav-item">
+                <a id='clr_path' onclick="clearPath()" role="button" class="nav-link d-none" >Clear Path</a>
+              </li> -->
+              
+              <li class="nav-item dropdown">
+                <a id="make_node_type" class="nav-link dropdown-toggle d-none" role="button" data-bs-toggle="dropdown" aria-expanded="false">Make Node as</a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><a onclick="setMakeNodeTitle(1)" class="dropdown-item" >Wall Node</a></li>
+                    <li><a onclick="setMakeNodeTitle(2)" class="dropdown-item" >Weighted Node</a></li>
+                    <li><a onclick="setMakeNodeTitle(3)" class="dropdown-item" >None</a></li>
+                </ul>
+              </li>
+            </ul>
+            <button id="visualize_btn" type="button" class="btn btn-info disabled" style="margin-left: 50px;">Visualize</button>
+          </div>
+        </div>
+      </nav>
+      <footer id="pfa_footer" class="d-none">
+      <div class="d-flex justify-content-center mt-3 mb-5">
+        <ul class="list-group collapse">
+          <li class="list-group-item" style="display: flex;">
+            <div class="c_node startnode"  style="margin-right: 1vw;"></div>Start Node
+          </li>
+          <li class="list-group-item" style="display: flex;">
+            <div class="c_node endnode"  style="margin-right: 1vw;"></div>End Node
+          </li>
+          <li class="list-group-item" style="display: flex;">
+            <div class="c_node unvisited"  style="margin-right: 1vw;"></div>Unvisited Node (1unit)
+          </li>
+          <li class="list-group-item" style="display: flex;">
+            <div class="c_node visiting"  style="margin-right: 1vw;"></div>Visiting Node
+          </li>
+          <li class="list-group-item" style="display: flex;">
+            <div class="c_node visited"  style="margin-right: 1vw;"></div>Visited Node
+          </li>
+          <li class="list-group-item" style="display: flex;">
+            <div class="c_node weightednode"  style="margin-right: 1vw;"></div>Weighted Node (10unit)
+          </li>
+          <li class="list-group-item" style="display: flex;">
+            <div class="c_node wallnode"  style="margin-right: 1vw;"></div>Wall Node
+          </li>
+          <li class="list-group-item" style="display: flex;">
+            <div class="c_node pathnode"  style="margin-right: 1vw;"></div>Path Node
+          </li>
+        </ul>
+      </div>
+          <div style="object-position: bottom;">
+              <table class="board">
+                <tbody id="grid_container"></tbody>
+              </table>
+          </div>
+      </footer>
+
+
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>

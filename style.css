@@ -1,0 +1,117 @@
+:root{
+    --rt_background: rgb(222, 222, 252);
+    --nav_background: rgb(5, 117, 145);
+    --select_color: rgb(4, 245, 253);
+    --unit: 0.1vw;
+}
+body{
+    margin: 0;
+    width: 100%;
+    position: absolute;
+}
+/* .fy{
+    display: block;
+} */
+/* .navbar{
+    height: 64px;
+    background-color: var(--nav_background);
+} */
+/* .nav_menu{
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+} */
+/* .projectname{
+    color: var(--rt_background);
+    float: left;
+    margin: 0;
+    padding: 10px;
+}
+.visualizebtn{
+    height: 36px;
+    width: 120px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: var(--select_color);
+    border: 0;
+    border-radius: 0.5rem;
+}
+.dropdown{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+}
+.nav_menu>div,.visualizebtn:hover {
+    cursor: pointer;
+} */
+/* .arrowDown{
+    margin: 0 10px;
+    width: 16px;
+    height: 14px;
+    align-self: center;
+} */
+.desrc__{
+    width: 100%;
+    margin: 0 auto;
+}
+.board{
+    margin: auto;
+    border: 0.2vw solid rgb(134, 236, 240);
+}
+.c_row{
+    display: flex;
+}
+.c_node{
+    width: 1.5vw;
+    height: 1.5vw;
+    border: 0.1vw solid rgb(148, 238, 241);
+} 
+.startnode{
+    background-image: url("assets/img/startNodeImg.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.startOrEndNodeClicked{
+    border:0.2vw solid rgb(250, 4, 147);
+    border-radius: 1vw;
+}
+.endnode{
+    background-image: url("assets/img/endNodeImg.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.wallnode{
+    background-color: black;
+}
+.weightednode{
+    background-color: rgba(0, 0, 0, 0.301);
+}
+.unvisited {
+    background-color: white;
+}
+.visiting {
+    background-color: rgb(208, 84, 230);
+}
+.visited{
+    background-color: rgb(66, 31, 221);
+}
+.pathnode{
+    background-color: rgb(7, 160, 58);
+}
+#footer {
+    width: 100%;
+}
+.collapse{
+    display: flex !important;
+    flex-direction: row !important;
+}
+/* ---------------- */
+@media screen and (max-width: 768px) {  
+    .collapse {
+            display: block !important;
+    }  
+}
