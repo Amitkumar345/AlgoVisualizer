@@ -97,10 +97,26 @@ body{
     background-color: rgb(208, 84, 230);
 }
 .visited{
-    background-color: rgb(66, 31, 221);
+    /* background-color: rgb(66, 31, 221); */
+    animation-name: visitedAnimation;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-out;
+    animation-delay: 0;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
 }
 .pathnode{
-    background-color: rgb(7, 160, 58);
+    background-color: rgba(0, 190, 218, 0.75);
+    animation-name: makePath;
+    animation-duration: 1.5s;
+    animation-timing-function: linear;
+    animation-delay: 0;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
 }
 #footer {
     width: 100%;
@@ -108,6 +124,41 @@ body{
 .collapse{
     display: flex !important;
     flex-direction: row !important;
+}
+/* --------Animations-------- */
+@keyframes visitedAnimation {
+    0% {
+        transform: scale(.3);
+        background-color: rgba(0, 0, 66, 0.75);
+        border-radius: 100%;
+    }
+    
+    50% {
+        background-color: rgba(17, 104, 217, 0.75);
+    }
+    75% {
+        transform: scale(1.2);
+        background-color: rgba(0, 217, 159, 0.75);
+    }
+    100% {
+        transform: scale(1.0);
+        background-color: rgba(0, 190, 218, 0.75);
+    }
+}
+@keyframes makePath {
+    0% {
+        transform: scale(.6);
+        background-color: rgb(255, 254, 106);
+    }
+    
+    50% {
+        transform: scale(1.2);
+        background-color: rgb(255, 254, 106);
+    }
+    100% {
+        transform: scale(1.0);
+        background-color: rgb(255, 254, 106);
+    }
 }
 /* ---------------- */
 @media screen and (max-width: 768px) {  
