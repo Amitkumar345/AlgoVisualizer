@@ -79,6 +79,9 @@ function show_PFA_Footer(show){
     if(show)pfaFooter.classList.remove('d-none')
     else pfaFooter.classList.add('d-none')
 }
+function getNodeId(i,j){
+    return i+'-'+j;
+}
 function getRowFromNodeId(id){
     var x = 2;
     if(id.charAt(1) == '-')x=1;
@@ -319,6 +322,7 @@ function makeNodeAsWeighted(el){
         el.className ='c_node weightednode'
 }
 function isWeightedNode(el){
+    if(!el)return false;
     return el.classList.contains('weightednode')
 }
 function isWeightedIndex(i,j){
@@ -344,7 +348,7 @@ function visualizeAlgo(){
     }else if(algo.includes("Breadth First Search")){
         BFS();
     }else if(algo.includes("Depth First Search")){
-        
+        DFS();
     }else{
         
     }
@@ -380,18 +384,24 @@ function selectAlgo(sect,num){
 }
 ///--------- SORTING ALGORITHMS ----------/////
 ///--------- PATH FINDING ALGORITHMS ---------/////
-var visArr = new Array(3);
+var visArr = new Array(R);
+var time;
+const parent = new Map();
+const visitedNodes = [];
 const moveRow = [0,1,0,-1];
 const moveCol = [1,0,-1,0];
 for(var i=0;i<R;i++){
     visArr[i] = new Array(C);
 }
-function resetVisArr(){
+function resetHelpingVariables(){
+    time =0;
     for(var i=0;i<R;i++){
         for(var j=0;j<C;j++){
             visArr[i][j] = false;
         }
     }
+    parent.clear();
+    clearPath();
 }
 function isValidIndex(i,j){
     if(i<0 || j<0 || i>=R || j>=C)return false;
@@ -404,9 +414,8 @@ function isValidIndex(i,j){
     }
     return true;
 }
-const parent = new Map();
 function BFS(){
-    resetVisArr();
+    resetHelpingVariables();
     var q = [];
     q.push([st_r,st_c]);
     visArr[st_r][st_c] = true;
@@ -418,7 +427,7 @@ function BFS(){
             // alert("found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
             console.log("found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
             var id = i+'-'+j;
-            showPath(id);
+            visualizeNodes(id);
             return;
         }
         for(var k=0;k<4;k++){
@@ -429,12 +438,65 @@ function BFS(){
             var parentId = i+'-'+j;
             parent.set(childId,parentId);
             q.push([adjR,adjC]);
-            makeIndexVisited(adjR,adjC);
+            addVisitedIndex(adjR,adjC);
             visArr[adjR][adjC]= true;
         }
     }
-    alert("not found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+    // alert("not found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
     console.log("not found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+    visualizeNodes();
+}
+function DFS(){
+    resetHelpingVariables();
+    __dfs(st_r,st_c);
+}
+function __dfs(i,j){
+    if(isEndIndex(i,j)){
+        // alert("found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+        console.log("found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+        var id = i+'-'+j;
+        visualizeNodes(id);
+        return true;
+    }
+    visArr[i][j]= true;
+    for(var k=0;k<4;k++){
+        var adjR = parseInt(i) + moveRow[k];
+        var adjC = parseInt(j) + moveCol[k];
+        if(!isValidIndex(adjR,adjC))continue;
+        var childId = adjR+'-'+adjC;
+        var parentId = i+'-'+j;
+        parent.set(childId,parentId);
+        addVisitedIndex(adjR,adjC);
+        if(__dfs(adjR,adjC))return true;
+    }
+    visualizeNodes();
+    return false;
+}
+function addVisitedIndex(i,j){
+    if(isStartIndex(i,j) || isEndIndex(i,j))return;
+    visitedNodes.push([i,j]);
+}
+function showVisitedIndex(){
+    var n = visitedNodes.length;
+    time = 0;
+    var i,j;
+    for(var k=0;k<n;k++){
+        i = visitedNodes[0][0];
+        j = visitedNodes[0][1];
+        visitedNodes.shift();
+        var el = document.getElementById(getNodeId(i,j))
+        el.style.animationDelay = time+'ms';
+        time = +time + 7;
+        makeIndexVisited(i,j);
+    }
+    time = +time + 200;
+}
+function visualizeNodes(cId){
+    showVisitedIndex();
+    if(!cId)return;
+    setTimeout(function(){
+        showPath(cId);
+      }, time);
 }
 function showPath(cId){
     var ar = [];
@@ -443,9 +505,12 @@ function showPath(cId){
         ar.push(pId);
         pId = parent.get(pId);
     }
+    time = 0;
     ar.reverse();
     for(var i=1;i<ar.length;i++){
         var el = document.getElementById(ar[i]);
+        time = +time + 10;
+        el.style.animationDelay = time +"ms";
         makeNodeAsPathNode(el);
     }
 }
