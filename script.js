@@ -319,6 +319,7 @@ function makeNodeAsWeighted(el){
         el.className ='c_node weightednode'
 }
 function isWeightedNode(el){
+    if(!el)return false;
     return el.classList.contains('weightednode')
 }
 function isWeightedIndex(i,j){
@@ -344,7 +345,7 @@ function visualizeAlgo(){
     }else if(algo.includes("Breadth First Search")){
         BFS();
     }else if(algo.includes("Depth First Search")){
-        
+        DFS();
     }else{
         
     }
@@ -380,18 +381,20 @@ function selectAlgo(sect,num){
 }
 ///--------- SORTING ALGORITHMS ----------/////
 ///--------- PATH FINDING ALGORITHMS ---------/////
-var visArr = new Array(3);
+var visArr = new Array(R);
+const parent = new Map();
 const moveRow = [0,1,0,-1];
 const moveCol = [1,0,-1,0];
 for(var i=0;i<R;i++){
     visArr[i] = new Array(C);
 }
-function resetVisArr(){
+function resetHelpingVariables(){
     for(var i=0;i<R;i++){
         for(var j=0;j<C;j++){
             visArr[i][j] = false;
         }
     }
+    parent.clear();
 }
 function isValidIndex(i,j){
     if(i<0 || j<0 || i>=R || j>=C)return false;
@@ -404,9 +407,9 @@ function isValidIndex(i,j){
     }
     return true;
 }
-const parent = new Map();
 function BFS(){
-    resetVisArr();
+    clearPath();
+    resetHelpingVariables();
     var q = [];
     q.push([st_r,st_c]);
     visArr[st_r][st_c] = true;
@@ -433,8 +436,34 @@ function BFS(){
             visArr[adjR][adjC]= true;
         }
     }
-    alert("not found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+    // alert("not found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
     console.log("not found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+}
+function DFS(){
+    clearPath();
+    resetHelpingVariables();
+    __dfs(st_r,st_c);
+}
+function __dfs(i,j){
+    if(isEndIndex(i,j)){
+        // alert("found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+        console.log("found\n" + st_r+"-"+st_c+"->"+en_r+"-"+en_c);
+        var id = i+'-'+j;
+        showPath(id);
+        return true;
+    }
+    visArr[i][j]= true;
+    for(var k=0;k<4;k++){
+        var adjR = parseInt(i) + moveRow[k];
+        var adjC = parseInt(j) + moveCol[k];
+        if(!isValidIndex(adjR,adjC))continue;
+        var childId = adjR+'-'+adjC;
+        var parentId = i+'-'+j;
+        parent.set(childId,parentId);
+        makeIndexVisited(adjR,adjC);
+        if(__dfs(adjR,adjC))return true;
+    }
+    return false;
 }
 function showPath(cId){
     var ar = [];
