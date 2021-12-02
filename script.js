@@ -1,7 +1,7 @@
 const R = 22,C=64;
 var st_r = 10,st_c=15,en_r=6,en_c=40;
 var startNode,endNode,clickedEle="";
-let algoTypeTitle,selectedAlgo,algoMenu,clrBoard,clrPath,makeNodeTitle;
+let algoTypeTitle,selectedAlgo,algoMenu,clrBoard,clrPath,makeNodeTitle,aboutAlgo;
 // algos
 let selectionSort,insertionSort;
 let dijkstraAlgo,bfsAlgo,dfsAlgo;
@@ -28,6 +28,7 @@ function setUp(){
 
     grid_c = document.getElementById('grid_container');
     pfaFooter = document.getElementById('pfa_footer');
+    aboutAlgo = document.getElementById('about_algo');
 
     createGrid()
 }
@@ -41,6 +42,7 @@ function setTypeAsSA(){
     showSortingAlgos()
     hidPathFindingAlgos()
     show_PFA_Footer(false)
+    alert("NOT READY");
 }
 function setTypeAsPFA(){
     algoTypeTitle.textContent = 'Path Finding'
@@ -356,13 +358,15 @@ function visualizeAlgo(){
 ///
 /////--------- ALGORITHMS ----------------//////
 function selectAlgo(sect,num){
-    var s;
+    var s,txt;
     if(sect == 1){
         switch(num){
             case 1:
                 s = 'Selection Sort';
+                txt = '';
                 break;
-            case 2:
+                case 2:
+                txt = '';
                 s = 'Insertion Sort';
                 break;
         }
@@ -370,15 +374,19 @@ function selectAlgo(sect,num){
         switch(num){
             case 1:
                 s = "Dijkstra's algo";
+                txt = ' (Weighted): Guarantees shortest Path.';
                 break;
             case 2:
                 s = "Breadth First Search"
+                txt = ' (Unweighted): Guarantees shortest Path.';
                 break;
             case 3:
                 s="Depth First Search";
+                txt = ' (Unweighted): Does not guarantees shortest path';
                 break;
         }
     }
+    aboutAlgo.textContent = s+txt;
     selectedAlgo.textContent = s;
     enableVisualizeBtn(true);
 }
