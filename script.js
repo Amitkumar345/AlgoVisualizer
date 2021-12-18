@@ -132,7 +132,11 @@ function clearPath(){
     if(algoTypeTitle.textContent == 'Sorting')return;
     for(var i=0;i<R;i++){
         for(var j=0;j<C;j++){
-            if(isStartIndex(i,j) || isEndIndex(i,j) || isWallIndex(i,j) || isWeightedIndex(i,j))continue;
+            if(isStartIndex(i,j) || isEndIndex(i,j) || isWallIndex(i,j))continue;
+            if(isWeightedIndex(i,j)){
+                if(isPathIndex(i,j))makePathIndexAsWeighted(i,j);
+                continue;
+            }
             var id = ''+i+"-"+j
             var node = document.getElementById(id)
             node.className = 'c_node unvisited'
@@ -166,12 +170,22 @@ function makeNodeUnVisited(el){
     removeStartOrEndNodeListener(el)
     addUnvisitedNodeListener(el)
 }
+function isPathIndex(i,j){
+    var id = ''+i+"-"+j
+    return isPathNode(document.getElementById(id));
+}
+function isPathNode(el){
+    return el.classList.contains('pathnode');
+}
 function makeIndexAsPathNode(i,j){
     var id = ''+i+"-"+j
     makeNodeAsPathNode(document.getElementById(id))
 }
 function makeNodeAsPathNode(el){
-    el.className = 'c_node pathnode'
+    if(isWeightedNode(el))
+        el.className = 'c_node pathnode weightednode'
+    else
+        el.className = 'c_node pathnode'
 }
 // function cloneNodeForRemovingListeners(old_el){
 //     var new_el = old_el.cloneNode(true);
@@ -323,6 +337,13 @@ function makeNodeAsWeighted(el){
     else
         el.className ='c_node weightednode'
 }
+function makePathIndexAsWeighted(i,j){
+    var id = ''+i+"-"+j;
+    makePathNodeAsWeighted(document.getElementById(id));
+}
+function makePathNodeAsWeighted(el){
+    el.className = 'c_node weightednode'
+}
 function isWeightedNode(el){
     if(!el)return false;
     return el.classList.contains('weightednode')
@@ -346,7 +367,7 @@ function visualizeAlgo(){
     }else if(algo.includes('Insertion Sort')){
 
     }else if(algo.includes("Dijkstra's algo")){
-        
+        DIJKSTRA();
     }else if(algo.includes("Breadth First Search")){
         BFS();
     }else if(algo.includes("Depth First Search")){
@@ -421,6 +442,60 @@ function isValidIndex(i,j){
         return false;
     }
     return true;
+}
+function DIJKSTRA(){
+    resetHelpingVariables();
+    var dist = new Array(R);
+    for(var i=0;i<R;i++){
+        dist[i] = new Array(C);
+        for(var j=0;j<C;j++){
+            dist[i][j] = Number.MAX_VALUE;
+        }
+    }
+    dist[st_r][st_c] = 0;
+    var found = false;
+    // visArr for a cell is true if the cell is included in shortest path or shortest distance from src to the cell is finalized
+    for(var i=1;i<R*C;i++){
+        var mnIdx = minDistForDijkstra(dist);
+        if(mnIdx[0] == -1 || mnIdx[1] == -1){
+            console.log("no any unprocessed shortest path left");
+            break;
+        }
+        if(isEndIndex(mnIdx[0],mnIdx[1])){
+            visualizeNodes(getNodeId(en_r,en_c));
+            found = true;
+        }
+        visArr[mnIdx[0]][mnIdx[1]] = true;
+        for(var k=0;k<4;k++){
+            var adjR = parseInt(mnIdx[0]) + moveRow[k];
+            var adjC = parseInt(mnIdx[1]) + moveCol[k];
+            if(!isValidIndex(adjR,adjC))continue;
+            var w = (isWeightedIndex(adjR,adjC)?10:1);
+            if(dist[mnIdx[0]][mnIdx[1]] != Number.MAX_VALUE && dist[mnIdx[0]][mnIdx[1]] + w < dist[adjR][adjC]){
+                dist[adjR][adjC] = dist[mnIdx[0]][mnIdx[1]] + w;
+                var childId = adjR+'-'+adjC;
+                var parentId = mnIdx[0]+'-'+mnIdx[1];
+                parent.set(childId,parentId);
+                if(!found && w==1)addVisitedIndex(adjR,adjC);
+            }
+        }
+    }
+    // visualizeNodes(getNodeId(en_r,en_c));
+}
+function minDistForDijkstra(dist){
+    var mn = Number.MAX_VALUE;
+    var mnIdx = new Array(2);
+    mnIdx[0]=-1;mnIdx[1]=-1;
+    for(var i=0;i<R;i++){
+        for(var j=0;j<C;j++){
+            if(isValidIndex(i,j) && dist[i][j] < mn){
+                mn = dist[i][j];
+                mnIdx[0] = i;
+                mnIdx[1] = j; 
+            }
+        }
+    }
+    return mnIdx;
 }
 function BFS(){
     resetHelpingVariables();

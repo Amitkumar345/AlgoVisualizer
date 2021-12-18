@@ -88,7 +88,10 @@ body{
     background-color: black;
 }
 .weightednode{
-    background-color: rgba(0, 0, 0, 0.301);
+    background-image: url("assets/img/weight.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 .unvisited {
     background-color: white;
