@@ -457,6 +457,7 @@ function BFS(){
 function DFS(){
     resetHelpingVariables();
     __dfs(st_r,st_c);
+    visualizeNodes();
 }
 function __dfs(i,j){
     if(isEndIndex(i,j)){
@@ -477,7 +478,6 @@ function __dfs(i,j){
         addVisitedIndex(adjR,adjC);
         if(__dfs(adjR,adjC))return true;
     }
-    visualizeNodes();
     return false;
 }
 function addVisitedIndex(i,j){
