@@ -42,7 +42,7 @@ function setTypeAsSA(){
     showSortingAlgos()
     hidPathFindingAlgos()
     show_PFA_Footer(false)
-    alert("NOT READY");
+    alert("NOT READY, TRY OTHER ONE");
 }
 function setTypeAsPFA(){
     algoTypeTitle.textContent = 'Path Finding'
