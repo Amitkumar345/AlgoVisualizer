@@ -31,6 +31,7 @@ function setUp(){
     aboutAlgo = document.getElementById('about_algo');
 
     createGrid()
+    setTypeAsPFA()
 }
 function setTypeAsSA(){
     algoTypeTitle.textContent = 'Sorting'
